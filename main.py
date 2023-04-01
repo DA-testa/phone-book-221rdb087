@@ -15,31 +15,19 @@ def write_responses(result):
 def process_queries(queries):
     result = []
   
-    contacts = []
+    contacts = {}
     for cur_query in queries:
         if cur_query.type == 'add':
-            
-            for contact in contacts:
-                if contact.number == cur_query.number:
-                    contact.name = cur_query.name
-                    break
-            else: 
-                contacts.append(cur_query)
+            contacts[cur_query.number] = cur_query.name
         elif cur_query.type == 'del':
-            for j in range(len(contacts)):
-                if contacts[j].number == cur_query.number:
-                    contacts.pop(j)
-                    break
+            if cur_query.number in contacts:
+                del contacts[cur_query.number]
         else:
-            found = False
-            for contact in contacts:
-                if contact.number == cur_query.number:
-                    result.append(contact.name)
-                    found = True
-                    break
-            if not found:
-                result.append('not found')
+            name = contacts.get(cur_query.number, 'not found')
+            result.append(name)
+            
     return result
+
 
 if __name__ == '__main__':
     write_responses(process_queries(read_queries()))
